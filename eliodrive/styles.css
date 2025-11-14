@@ -1,0 +1,283 @@
+:root {
+  --gap: 12px;
+  --radius: 10px;
+  --bg: #0f1115;
+  --card: #161a22;
+  --text: #e6e6e6;
+  --muted: #9aa3b2;
+  --primary: #2d7ff9;
+  --tick: #3bd67f;
+  --border: #232938;
+  --selected: #00e5ff; /* cian para selección */
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(15,17,21,.8); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px var(--gap);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.topbar h1 { margin: 0; font-size: 18px; }
+.actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+input[type="search"] {
+  background: var(--card); color: var(--text); border: 1px solid var(--border);
+  padding: 8px 10px; border-radius: 8px; min-width: 220px;
+}
+button, .meta .dl, .meta .copy {
+  background: var(--card); color: var(--text); border: 1px solid var(--border);
+  padding: 8px 12px; border-radius: 8px; cursor: pointer; text-decoration: none;
+}
+button.primary { background: var(--primary); border-color: #1c5ed3; }
+#count { color: var(--muted); margin-left: 4px; }
+
+main { padding: var(--gap); }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--gap);
+}
+.card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.card img {
+  width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block;
+}
+.meta { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.name { font-size: 12px; color: var(--muted); word-break: break-all; }
+.meta-row { display: flex; gap: 8px; }
+
+.tick { position: absolute; top: 8px; left: 8px; z-index: 2; }
+.tick input { display: none; }
+.tick span {
+  display: inline-block; width: 22px; height: 22px; border-radius: 6px;
+  background: rgba(0,0,0,.35); border: 1px solid var(--border);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+}
+.tick input:checked + span {
+  background: var(--selected);
+  border-color: #0aa7bf;
+  box-shadow: 0 0 8px var(--selected);
+}
+
+/* ESTADO SELECCIONADO DE LA TARJETA */
+.card.selected {
+  outline: 2px solid var(--selected);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.25);
+}
+
+/* cursor para indicar que se puede marcar clicando en la miniatura */
+.card .imglink { cursor: pointer; }
+
+/* estado visual basado en el checkbox */
+.card:has(.chk:checked) {
+  outline: 2px solid var(--selected);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.25);
+}
+
+
+/* Lightbox popup */
+/* Lightbox oculto por defecto */
+.lightbox {
+  display: none;                    /* 🔒 por defecto oculto */
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  padding: 20px;
+
+  /* layout cuando esté abierto (lo pondremos en .open) */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.lightbox.open {                    /* 👁️ visible cuando tenga .open */
+  display: flex;
+}
+
+.lightbox img {
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}
+.lightbox .close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#lightbox-caption {
+  color: #ccc;
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.lightbox .nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-size: 40px;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: 50%;
+  user-select: none;
+}
+.lightbox .nav:hover {
+  background: rgba(0,0,0,0.8);
+}
+.lightbox .nav.prev { left: 20px; }
+.lightbox .nav.next { right: 20px; }
+/* marco del modal para poder aplicar borde/halo */
+.lb-frame {
+  position: relative;
+  border-radius: 10px;
+}
+.lb-frame img {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 10px;
+  display: block;
+}
+
+/* checkbox en el lightbox */
+.lb-tick { position: absolute; top: 12px; left: 12px; z-index: 2; }
+.lb-tick input { display: none; }
+.lb-tick span {
+  display: inline-block; width: 26px; height: 26px; border-radius: 6px;
+  background: rgba(0,0,0,.35); border: 1px solid var(--border);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+}
+.lb-tick input:checked + span {
+  background: var(--selected);
+  border-color: #0aa7bf;
+  box-shadow: 0 0 8px var(--selected);
+}
+
+/* ✅ borde/halo cian cuando el checkbox del modal está marcado */
+.lb-frame:has(#lb-chk:checked) {
+  outline: 3px solid var(--selected);
+  box-shadow: 0 0 0 6px rgba(0, 229, 255, 0.25);
+  border-radius: 12px;
+}
+
+/* ====== Select bonito para el #sort ====== */
+#sort{
+  appearance: none;                 /* quita el estilo nativo (Chrome/Firefox) */
+  -webkit-appearance: none;         /* Safari */
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 36px 8px 12px;       /* hueco a la derecha para la flecha */
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  min-width: 170px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  /* Flecha personalizada (SVG) */
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b9c2d0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-position: right 12px center;
+}
+
+/* Hover / focus */
+#sort:hover{
+  border-color: #2b3650;
+}
+#sort:focus,
+#sort:focus-visible{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(45,127,249,.25);
+}
+
+/* Activo / abierto (algunos navegadores) */
+#sort:active{
+  background: #1a2030;
+}
+
+/* Deshabilitado (por si algún día lo usas) */
+#sort:disabled{
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* Alto contraste con teclado */
+@media (prefers-reduced-motion: reduce){
+  #sort{ transition: none; }
+}
+
+/* En Windows/IE heredado (por si acaso): oculta el icono nativo */
+select#sort::-ms-expand{ display: none; }
+
+
+
+
+
+
+
+
+
+
+
+
+/* LOADER */
+ .imglink {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+}
+
+.imglink .spinner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.imglink .spinner::after {
+  content: "";
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Imagen mientras carga */
+.imglink img.loading {
+  filter: blur(2px);
+  opacity: 0.8;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* Imagen normal cuando termina de cargar */
+.imglink img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

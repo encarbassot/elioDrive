@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ElioDrive</title>
+  <link rel="stylesheet" href="./eliodrive/styles.css" />
+
+<!-- FAVICONS -->
+<link rel="apple-touch-icon" sizes="180x180" href="./eliodrive/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./eliodrive/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./eliodrive/favicon/favicon-16x16.png">
+<link rel="manifest" href="./eliodrive/favicon/site.webmanifest">
+<link rel="shortcut icon" href="./eliodrive/favicon/favicon.ico">
+
+<!-- ANDROID CHROME -->
+<link rel="icon" type="image/png" sizes="192x192" href="./eliodrive/favicon/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./eliodrive/favicon/android-chrome-512x512.png">
+
+<!-- THEME COLORS -->
+<meta name="theme-color" content="#0f1115">
+<meta name="msapplication-TileColor" content="#0f1115">
+<meta name="msapplication-TileImage" content="./eliodrive/favicon/android-chrome-192x192.png">
+
+
+  <!-- Open Graph -->
+<meta property="og:title" content="Galería de fotos del finde" />
+<meta property="og:description" content="Colección de imágenes compartidas desde mi Raspberry. 🚲📷" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://fabrega.cat/carros/" />
+<meta property="og:image" content="https://fabrega.cat/carros/DSC01776.JPG" />
+<meta property="og:image:alt" content="Foto del finde" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Galería de fotos del finde" />
+<meta name="twitter:description" content="Colección de imágenes compartidas desde mi Raspberry. 🚲📷" />
+<meta name="twitter:image" content="https://fabrega.cat/carros/DSC01776.JPG" />
+
+</head>
+<body>
+  <header class="topbar">
+    <h1>🥝 ElioDrive</h1>
+    <div class="actions">
+      <input id="search" type="search" placeholder="Buscar..." />
+      <button id="selectAll">Seleccionar todo</button>
+      <button id="clearSel">Limpiar selección</button>
+      <button id="downloadSel" class="primary">Descargar seleccionadas (ZIP)</button>
+      <span id="count">0 seleccionadas</span>
+
+      <select id="sort">
+        <option value="name-asc" selected>Nombre ↑</option>
+        <option value="name-desc">Nombre ↓</option>
+        <option value="date-asc">Fecha ↑</option>
+        <option value="date-desc">Fecha ↓</option>
+      </select>
+      
+    </div>
+  </header>
+
+  <main>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" hidden>No hay imágenes que coincidan.</div>
+  </main>
+
+  <template id="card-tpl">
+    <div class="card">
+      <label class="tick">
+        <input type="checkbox" class="chk" />
+        <span></span>
+      </label>
+      <a class="imglink" target="_blank" rel="noopener">
+        <img loading="lazy" />
+      </a>
+      <div class="meta">
+        <div class="name"></div>
+        <div class="meta-row">
+          <button class="copy">Copiar enlace</button>
+          <a class="dl" download>Descargar</a>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  
+  <div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+  
+    <!-- contenedor para poder aplicar el borde cian -->
+    <div class="lb-frame">
+      <!-- ✅ checkbox del modal -->
+      <label class="tick lb-tick">
+        <input type="checkbox" id="lb-chk" />
+        <span></span>
+      </label>
+  
+      <img id="lightbox-img" src="" alt="preview" />
+    </div>
+  
+    <div id="lightbox-caption"></div>
+  
+    <button class="nav prev">&#10094;</button>
+    <button class="nav next">&#10095;</button>
+  </div>
+    
+  
+  <!-- Librerías para ZIP en el cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+  <script src="./eliodrive/script.js"></script>
+</body>
+</html>
