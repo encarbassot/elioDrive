@@ -46,7 +46,8 @@ main { padding: var(--gap); }
   overflow: hidden;
   display: flex; flex-direction: column;
 }
-.card img {
+.card img,
+.card video {
   width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block;
 }
 .meta { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -102,12 +103,27 @@ main { padding: var(--gap); }
   display: flex;
 }
 
+
 .lightbox img {
   max-width: 90%;
   max-height: 80%;
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0,0,0,0.6);
 }
+
+#lightbox-pre{
+  height: 60vh;
+  overflow: auto;
+  padding: 1rem;
+  background-color: #111;
+  color: #eee;
+  font-family: monospace;
+  font-size: .85rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+
 .lightbox .close {
   position: absolute;
   top: 20px;

@@ -63,24 +63,6 @@
     <div id="empty" class="empty" hidden>No hay imágenes que coincidan.</div>
   </main>
 
-  <template id="card-tpl">
-    <div class="card">
-      <label class="tick">
-        <input type="checkbox" class="chk" />
-        <span></span>
-      </label>
-      <a class="imglink" target="_blank" rel="noopener">
-        <img loading="lazy" />
-      </a>
-      <div class="meta">
-        <div class="name"></div>
-        <div class="meta-row">
-          <button class="copy">Copiar enlace</button>
-          <a class="dl" download>Descargar</a>
-        </div>
-      </div>
-    </div>
-  </template>
 
   
   <div id="lightbox" class="lightbox">
@@ -95,6 +77,9 @@
       </label>
   
       <img id="lightbox-img" src="" alt="preview" />
+      <pre id="lightbox-pre" class="lightbox-pre"></pre>
+      <video id="lightbox-video" class="lightbox-video" controls></video>
+
     </div>
   
     <div id="lightbox-caption"></div>
@@ -108,6 +93,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
-  <script src="./eliodrive/script.js"></script>
+  <script type="module" src="./eliodrive/lib/elioDOM.js"></script>
+  <script type="module" src="./eliodrive/app.js"></script>
 </body>
 </html>

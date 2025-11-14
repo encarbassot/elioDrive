@@ -1,2 +1,5 @@
 {"items":[
-{"name":"test.webp","relpath":"test.webp","url":"test.webp","size":5997704,"mtime":1762795984}]}
+{"name":"test.webp","relpath":"test.webp","url":"test.webp","size":5997704,"mtime":1762795984},
+{"name":"README.md","relpath":"README.md","url":"README.md","size":5997704,"mtime":1762795984},
+{"name":"test.mp4","relpath":"test.mp4","url":"test.mp4","size":5997704,"mtime":1762795984}
+]}
