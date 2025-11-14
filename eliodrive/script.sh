@@ -1,64 +1,91 @@
 #!/usr/bin/env bash
+
 # =========================================
-# Script para generar manifest.json para ELIODRIVE
+# Script para generar manifest.json para ELIODRIVE linux/MacOS
 # =========================================
 # Ejecutar desde la carpeta 'eliodrive':
 #   cd eliodrive
+#   chmod +x script.sh
 #   ./script.sh
 #
 # Esto recorrerá todos los archivos de la carpeta padre (../),
-# generando un manifest.json que lista cada archivo con:
-# - nombre
-# - ruta relativa
-# - url
-# - tamaño en bytes
-# - fecha de modificación
+# generando un manifest.json
 #
 # El manifest se puede usar para servir un drive estático
 # en nginx, apache o cualquier servidor web.
 # =========================================
 
-echo "Generando manifest.json para los archivos en ../ …"
+set -euo pipefail
 
-out="manifest.json"
-echo '{"items":[' > "$out"
+# Go to project root (parent of eliodrive)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+OUT_FILE="$SCRIPT_DIR/manifest.json"
 
-first=true
-count=0
+cd "$ROOT_DIR"
 
-while IFS= read -r -d '' f; do
-  name=$(basename "$f")
-  relpath="${f#../}"      # ruta relativa desde ../
-  url="$relpath"
-  size=$(stat -c%s "$f")
-  mtime=$(stat -c%Y "$f")
+# Simple JSON escaper for strings (handles \, " and newlines)
+json_escape() {
+  local s="$1"
+  s=${s//\\/\\\\}     # backslash
+  s=${s//\"/\\\"}     # double quote
+  s=${s//$'\n'/\\n}   # newlines -> \n
+  printf '%s' "$s"
+}
 
-  # imprimir los primeros 25 archivos
-  if [ $count -lt 25 ]; then
-    echo "  $relpath"
-    count=$((count+1))
-  elif [ $count -eq 25 ]; then
-    echo "  ... (más archivos omitidos)"
-    count=$((count+1))
-  fi
-
-  if [ "$first" = true ]; then
-    first=false
+# Detect stat flavor (macOS/BSD vs Linux/GNU)
+get_size() {
+  if stat -f '%z' "$1" >/dev/null 2>&1; then
+    stat -f '%z' "$1"
   else
-    echo "," >> "$out"
+    stat -c '%s' "$1"
+  fi
+}
+
+get_mtime() {
+  if stat -f '%m' "$1" >/dev/null 2>&1; then
+    stat -f '%m' "$1"
+  else
+    stat -c '%Y' "$1"
+  fi
+}
+
+echo "Generating manifest at: $OUT_FILE"
+echo '{"items":[' > "$OUT_FILE"
+
+first=1
+
+# Find all files under root, excluding eliodrive/, .git/ and index.html
+while IFS= read -r -d '' file; do
+  relpath="${file#./}"
+  [ -z "$relpath" ] && continue
+
+  name="$(basename "$relpath")"
+  size=$(get_size "$file")
+  mtime=$(get_mtime "$file")
+
+  name_esc=$(json_escape "$name")
+  relpath_esc=$(json_escape "$relpath")
+  url_esc=$(json_escape "$relpath")  # for now url == relpath
+
+  if [ $first -eq 0 ]; then
+    echo "," >> "$OUT_FILE"
+  else
+    first=0
   fi
 
-  printf '{"name":"%s","relpath":"%s","url":"%s","size":%s,"mtime":%s}' \
-    "$name" "$relpath" "$url" "$size" "$mtime" >> "$out"
+  cat >> "$OUT_FILE" <<EOF
+{"name":"$name_esc","relpath":"$relpath_esc","url":"$url_esc","size":$size,"mtime":$mtime}
+EOF
+
 done < <(
-  find ../ -type f \
-    ! -path '../eliodrive/src/*' \
-    ! -path '../eliodrive/tmp/*' \
-    ! -name 'index.html' \
-    ! -name 'manifest.json' \
-    -print0 | sort -z
+  find . -type f \
+    ! -path "./eliodrive/*" \
+    ! -path "./.git/*" \
+    ! -name "index.html" \
+    -print0
 )
 
-echo ']}' >> "$out"
+echo ']}' >> "$OUT_FILE"
 
-echo "✔ manifest.json generado con éxito"
+echo "Done."
