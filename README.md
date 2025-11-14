@@ -1,8 +1,11 @@
-# elioDrive
+# 🥝 elioDrive
 
 ### ElioDrive es una pequeña herramienta para publicar una carpeta con archivos (fotos, vídeos, documentos, etc.) como si fuera tu propio drive privado.
 
-Funciona con cualquier servidor de archivos estaticos, (Apache, Nginx ...)
+[LIVE DEMO](https://fabrega.cat/elioDrive)
+
+> [!TIP]
+> Funciona con cualquier servidor de archivos estaticos, (Apache, Nginx ...)
 
 
 # 1. Descarga el repositorio
@@ -14,7 +17,8 @@ cd fotosVerano
 git clone https://github.com/encarbassot/elioDrive.git
 ```
 
-Los archivos de ejemplo los puedes borrar, y el **README.md** también despues de leerlo (es este mismo archivo)
+> [!NOTE]
+> Los archivos de ejemplo los puedes borrar, y el **README.md** también despues de leerlo (es este mismo archivo)
 
 # 2. Copia tus archivos
 Tu proyecto debe verse así:
@@ -29,7 +33,8 @@ Tu proyecto debe verse así:
   ...
 ```
 
-el **index.html** y la carpeta **eliodrive/** son necesarios para el funcionamiento y son lo que debes descargar,
+> [!WARNING]
+> el **index.html** y la carpeta **eliodrive/** son necesarios para el funcionamiento y son lo que debes descargar,
 
 _No te preucupes, no se van a ver publicamente_
 
