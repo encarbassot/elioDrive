@@ -1,4 +1,4 @@
-import { elio } from "./lib/elioDom.js";
+import { elio } from "./lib/elioDOM.js";
 
 const IMAGE_EXTS = new Set([
   "jpg", "jpeg", "png", "gif", "webp", "avif", "bmp", "svg"
